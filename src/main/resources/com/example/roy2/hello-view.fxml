@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="261.0" prefWidth="428.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.roy2.HelloController">
+   <children>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Button mnemonicParsing="false" onAction="#startOnAction" text="Start" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" />
+            <Label fx:id="TracksHOME" text="Tracks HOME" textFill="RED" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="25.0" />
+            <Label fx:id="TRACKFOOD" text="TRACK FOOD" textFill="#2600ff" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0" />
+            <Label fx:id="PopulationBLUE" text="Population BLUE" textFill="#4000ff" AnchorPane.rightAnchor="0.0" />
+            <Label fx:id="PopulationRED" text="Population RED" textFill="RED" AnchorPane.leftAnchor="0.0" />
+         </children>
+      </AnchorPane>
+   </children>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+</AnchorPane>
