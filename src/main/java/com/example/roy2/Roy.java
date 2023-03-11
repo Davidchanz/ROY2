@@ -28,11 +28,11 @@ public class Roy {
     private ArrayList<Building> buildings;
     private HelloController controller;
     private ArrayList<Bug> newBugs;
-    public Roy(HelloController controller){
+    public Roy(HelloController controller, int inBugsCount, int speed){
         this.controller = controller;
         /*Timeline timeline = new Timeline(new KeyFrame(Duration.millis(30), this::render));
         timeline.setCycleCount(Timeline.INDEFINITE);*/
-        Timeline gameline = new Timeline(new KeyFrame(Duration.millis(5), this::game));
+        Timeline gameline = new Timeline(new KeyFrame(Duration.millis(speed), this::game));
         gameline.setCycleCount(Timeline.INDEFINITE);
 
         int w = 1000;
@@ -65,7 +65,7 @@ public class Roy {
         this.scene.add(this.antHeapRed);
         this.scene.add(this.antHeapBlue);
 
-        while (this.newBugs.size() < 1000) {
+        while (this.newBugs.size() < inBugsCount) {
             this.antHeapRed.addBug();
             this.antHeapBlue.addBug();
         }
@@ -341,6 +341,6 @@ public class Roy {
     }
 
     public static void main(String[] args) {
-        new Roy(null);
+        new Roy(null, 1000, 5);
     }
 }

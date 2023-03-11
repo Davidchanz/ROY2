@@ -9,10 +9,12 @@
       <AnchorPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <Button mnemonicParsing="false" onAction="#startOnAction" text="Start" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" />
-            <Label fx:id="TracksHOME" text="Tracks HOME" textFill="RED" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="25.0" />
-            <Label fx:id="TRACKFOOD" text="TRACK FOOD" textFill="#2600ff" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0" />
+            <Label fx:id="TracksHOME" text="BugsCount" textFill="RED" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="25.0" />
+            <Label fx:id="TRACKFOOD" text="Bugs Speed" textFill="#2600ff" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0" />
             <Label fx:id="PopulationBLUE" text="Population BLUE" textFill="#4000ff" AnchorPane.rightAnchor="0.0" />
             <Label fx:id="PopulationRED" text="Population RED" textFill="RED" AnchorPane.leftAnchor="0.0" />
+            <TextField fx:id="bugsCount" promptText="5000" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="50.0" />
+            <TextField fx:id="bugsSpeed" promptText="50" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0" />
          </children>
       </AnchorPane>
    </children>

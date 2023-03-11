@@ -30,7 +30,7 @@ public class Bug extends ShapeObject {
     private boolean isAlive;
     public Bug(int id, AntHeap antHeap){
         super("Bug", 4);
-        this.shape = new Rectangle(0.5f, new Vector3f(Scene.toGLDimension(antHeap.getPosition())), antHeap.getColor());
+        this.shape = new Rectangle(1f, new Vector3f(Scene.toGLDimension(antHeap.getPosition())), antHeap.getColor());
         this.add(this.shape);
         this.identity = id;
         this.type = 0;
