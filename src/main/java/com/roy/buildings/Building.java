@@ -1,4 +1,4 @@
-package com.example.roy2.roy;
+package com.roy.buildings;
 
 import org.engine.objects.ShapeObject;
 

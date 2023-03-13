@@ -1,5 +1,6 @@
-package com.example.roy2.roy;
+package com.roy.tracks;
 
+import com.roy.utils.Constants;
 import org.engine.maths.Vector3f;
 import org.engine.objects.GameObject;
 import org.engine.objects.ShapeObject;
@@ -15,11 +16,13 @@ public abstract class Track extends ShapeObject {
     private final int liveCapacity;
 
     public Track(int id, int range, Vector3f pos){
+        //super(1f, new Vector3f(pos), Color.GREEN);
+        //this.id = id;
         super("Track", id);
         this.range = range;
         this.shape = new Rectangle(1, new Vector3f(pos), Color.GREEN);
         this.add(shape);
-        this.liveCapacity = 500;
+        this.liveCapacity = Constants.TRACK_LIFE_CAPACITY;
         this.timeLine = liveCapacity;
         this.isActive = true;
     }

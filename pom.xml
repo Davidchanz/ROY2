@@ -81,7 +81,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.example.roy2/com.example.roy2.HelloApplication</mainClass>
+                            <mainClass>com.example.roy2/com.roy.Main</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>
@@ -105,7 +105,7 @@
                         <configuration>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.example.roy2.SuperMain</mainClass>
+                                    <mainClass>com.roy.SuperMain</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>

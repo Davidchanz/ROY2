@@ -1,7 +1,7 @@
-package com.example.roy2;
+package com.roy;
 
 public class SuperMain {
     public static void main(String[] args) {
-        HelloApplication.main(args);
+        Main.main(args);
     }
 }
