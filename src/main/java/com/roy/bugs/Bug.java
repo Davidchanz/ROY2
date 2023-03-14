@@ -63,6 +63,7 @@ public abstract class Bug extends ShapeObject implements NPC{
             }
         }
         this.findNewDir();
+        this.setBuffered(false);
     }
 
     @Override
@@ -140,6 +141,10 @@ public abstract class Bug extends ShapeObject implements NPC{
     @Override
     public void border() {
         if(this.lost) {
+            this.turnAround();
+        }else {
+            this.turnAround();
+            this.move();
             this.turnAround();
         }
     }

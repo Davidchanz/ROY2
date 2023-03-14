@@ -21,9 +21,10 @@ public class Constants {
     public static final int ALIEN_HOME = 4;
     public static final int BORDER = 5;
     public static final int FREEWAY = -1;
-    public static int TRACK_LIFE_CAPACITY = 500;
+    public static int TRACK_LIFE_CAPACITY = 50;
     public static final String ANT_WORKER = "src/main/resources/com/roy/white_ant.png";
-
+    public static final int BORDER_STONE_ID = 5;
+    public static final int STONE_SIZE = 15;
     private Constants(){}
 
     public static void ini(int w, int h, int foodValue, int speed, int bugsCount){

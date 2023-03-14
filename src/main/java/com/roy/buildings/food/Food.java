@@ -39,6 +39,7 @@ public class Food extends Building {
         this.shape.setWidth(this.foodCount / (float)Constants.FOOD_VALUE);
         this.shape.setHeight(this.foodCount / (float)Constants.FOOD_VALUE);
         this.shape.resize();
+        this.setSpriteSize(this.foodCount / Constants.FOOD_VALUE / 4);
     }
 
     public boolean isAlive() {

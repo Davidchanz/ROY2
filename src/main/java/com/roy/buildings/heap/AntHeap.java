@@ -28,6 +28,10 @@ public class AntHeap extends Building implements BugHome{
     //private ArrayList<Bug> bugs;
     private Color color;
 
+    public AntHeap(Vector3f position){
+        super("AntHeap", Constants.ANT_HEAP_ID);
+    }
+
     public AntHeap(int id, int foodCount, Vector3f pos, Color color, Consumer<Bug> createBug, Consumer<Track> markAction, Function<Bug, ArrayList<Track>> smellAction, Function<Bug, Integer> moveAction, Consumer<ShapeObject> death) {
         super("AntHeap", Constants.ANT_HEAP_ID);
         this.identity = id;
@@ -43,6 +47,7 @@ public class AntHeap extends Building implements BugHome{
         this.isAlive = true;
         //this.bugs = new ArrayList<>();
         this.color = color;
+        this.setSpriteSize(this.foodCount / Constants.FOOD_VALUE / 4);
     }
 
     @Override
@@ -107,6 +112,7 @@ public class AntHeap extends Building implements BugHome{
         this.shape.setWidth(this.foodCount / (float)Constants.FOOD_VALUE);
         this.shape.setHeight(this.foodCount / (float)Constants.FOOD_VALUE);
         this.shape.resize();
+        this.setSpriteSize(this.foodCount / Constants.FOOD_VALUE / 4);
     }
 
     public Bug addWorker(AntWorker bug){
