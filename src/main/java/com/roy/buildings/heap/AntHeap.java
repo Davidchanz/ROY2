@@ -5,6 +5,7 @@ import com.roy.bugs.Bug;
 import com.roy.buildings.Building;
 import com.roy.tracks.Track;
 import com.roy.utils.Constants;
+import org.UnityMath.Vector2;
 import org.engine.maths.Vector3f;
 import org.engine.objects.GameObject;
 import org.engine.objects.ShapeObject;
@@ -40,14 +41,14 @@ public class AntHeap extends Building implements BugHome{
         this.smellAction = smellAction;
         this.moveAction = moveAction;
         this.deathAction = death;
-        this.shape = new Rectangle(foodCount, new Vector3f(pos), color, "src/main/resources/com/roy/ant_heap.png");
+        this.shape = new Rectangle(foodCount, new Vector3f(pos), color);
         this.foodCount = foodCount * Constants.FOOD_VALUE;
         this.add(this.shape);
         this.bugCount = 0;
         this.isAlive = true;
         //this.bugs = new ArrayList<>();
         this.color = color;
-        this.setSpriteSize(this.foodCount / Constants.FOOD_VALUE / 4);
+        this.setSpriteSize(new Vector2(this.shape.getWidth(), this.shape.getHeight()));
     }
 
     @Override
@@ -78,16 +79,16 @@ public class AntHeap extends Building implements BugHome{
     public Bug addWorker(){
         AntWorker bug = new AntWorker(bugCount++, this);
         this.createBug.accept(bug);
-        //this.bugs.add(bug);
         return bug;
     }
 
     public void addFood(int foodCount){
-        /*this.foodCount += foodCount;//todo
+        this.foodCount += foodCount;//todo
         if(this.foodCount % Constants.FOOD_VALUE == 0) {
-            this.resize();
-            this.addBug();
-        }*/
+            //this.resize();
+            this.addWorker();
+            System.out.println("New Bug!");
+        }
     }
 
     public int stilledFood(int count){
@@ -112,7 +113,7 @@ public class AntHeap extends Building implements BugHome{
         this.shape.setWidth(this.foodCount / (float)Constants.FOOD_VALUE);
         this.shape.setHeight(this.foodCount / (float)Constants.FOOD_VALUE);
         this.shape.resize();
-        this.setSpriteSize(this.foodCount / Constants.FOOD_VALUE / 4);
+        this.setSpriteSize(new Vector2(this.shape.getWidth()/2, this.shape.getHeight()/2));//TODO
     }
 
     public Bug addWorker(AntWorker bug){

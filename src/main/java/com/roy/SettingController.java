@@ -22,7 +22,7 @@ public class SettingController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.bugsSpeed.setText("5");
-        this.bugsCount.setText("1000");
+        this.bugsCount.setText("100");
         this.width.setText("800");
         this.height.setText("800");
     }

@@ -2,6 +2,7 @@ package com.roy.buildings.food;
 
 import com.roy.buildings.Building;
 import com.roy.utils.Constants;
+import org.UnityMath.Vector2;
 import org.engine.maths.Vector3f;
 import org.engine.objects.GameObject;
 import org.engine.shapes.Rectangle;
@@ -14,8 +15,9 @@ public class Food extends Building {
         super("Food", Constants.FOOD_ID);
         this.shape = new Rectangle(foodCount, new Vector3f(pos), color);
         this.add(this.shape);
-        this.foodCount = Constants.FOOD_VALUE *foodCount;
+        this.foodCount = Constants.FOOD_VALUE * foodCount;
         this.isAlive = true;
+        this.setSpriteSize(new Vector2(this.shape.getWidth(), this.shape.getHeight()));
     }
 
     public int decreaseFoodCount(int count){
@@ -39,7 +41,7 @@ public class Food extends Building {
         this.shape.setWidth(this.foodCount / (float)Constants.FOOD_VALUE);
         this.shape.setHeight(this.foodCount / (float)Constants.FOOD_VALUE);
         this.shape.resize();
-        this.setSpriteSize(this.foodCount / Constants.FOOD_VALUE / 4);
+        this.setSpriteSize(new Vector2(this.shape.getWidth(), this.shape.getHeight()));
     }
 
     public boolean isAlive() {

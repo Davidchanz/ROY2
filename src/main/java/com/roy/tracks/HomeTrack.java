@@ -7,8 +7,7 @@ import org.engine.utils.Color;
 
 public class HomeTrack extends Track {
     public HomeTrack(int type, int range, Vector3f pos){
-        super(Constants.HOME_TRACK_ID, range, pos);
+        super(Constants.HOME_TRACK_ID, range, pos, Color.RED);
         this.type = type;
-        this.shape.setColor(Color.RED);
     }
 }

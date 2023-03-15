@@ -9,7 +9,7 @@ public interface NPC {
     void death();
     void preMove();
     void postMove();
-    void border();
+    void border(int whereBorder);
     void freeWay();
     void friendHome();
     void friendBud();

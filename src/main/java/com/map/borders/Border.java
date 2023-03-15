@@ -8,6 +8,5 @@ public abstract class Border extends ShapeObject {
     protected GameObject shape;
     public Border(String name, int id){
         super(name, id);
-        this.setSpriteSize(Constants.STONE_SIZE);
     }
 }

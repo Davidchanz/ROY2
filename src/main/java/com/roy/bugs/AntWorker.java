@@ -26,8 +26,8 @@ public class AntWorker extends Bug {
     }
 
     @Override
-    public void border() {
-        super.border();
+    public void border(int whereBorder) {
+        super.border(whereBorder);
     }
 
     @Override

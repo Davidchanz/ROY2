@@ -7,16 +7,22 @@ import com.roy.bugs.Bug;
 import com.roy.buildings.Building;
 import com.roy.buildings.food.Food;
 import com.roy.buildings.heap.AntHeap;
+import com.roy.tracks.FoodTrack;
+import com.roy.tracks.HomeTrack;
 import com.roy.tracks.Track;
 import com.roy.utils.Constants;
 import org.UnityMath.Vector2;
+import org.UnityMath.Vector3;
 import org.engine.Scene;
 import org.engine.cameras.Camera;
 import org.engine.cameras.PerspectiveCamera;
 import org.engine.cameras.ThirdPerson3DCamera;
+import org.engine.events.GLKeyEvent;
 import org.engine.events.GLMouseEvent;
 import org.engine.maths.Vector3f;
+import org.engine.objects.GameObject;
 import org.engine.objects.ShapeObject;
+import org.engine.utils.BorderType;
 import org.engine.utils.Color;
 
 import javax.swing.*;
@@ -26,14 +32,16 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.TreeMap;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class Roy {
     private Scene scene;
     private ArrayList<Bug> bugs;
-   // private TreeMap<Integer, Track[][]> trackFields;
-   // private TreeMap<Integer, Building[][]> buildingFields;
-    //private ArrayList<Building> buildings;
     private ArrayList<Bug> newBugs;
+    private ShapeObject homeTrack;
+    private ShapeObject foodTrack;
     public Roy(){
         javax.swing.Timer timer = new Timer(Constants.BUG_SPEED, this::game);
 
@@ -43,25 +51,37 @@ public class Roy {
         this.scene = new Scene(w, h, 800, 800, Color.TRANSPARENT);
         //this.scene.enableDevelopMode();
         //this.scene.setBorderVisible(true);
-        //this.scene.repaint();
-        //this.canvas.setFitHeight(h);
-        //this.canvas.setFitWidth(w);
-        //this.trackFields = new TreeMap<>();
-        //this.buildingFields = new TreeMap<>();
-
-        //this.buildings = new ArrayList<>();
         this.newBugs = new ArrayList<>();
 
         this.bugs = new ArrayList<>();
 
-        this.createAnteHeap(2, Constants.FOOD_VALUE/2, Color.RED, new Vector3f(-300, -300, 0));
+        this.createAnteHeap(2, Constants.FOOD_VALUE/4, Color.RED, new Vector3f(-300, -300, 0));
         //this.createAnteHeap(3, Constants.FOOD_VALUE/2, Color.GREEN, new Vector3f(300, -300, 0));
-        this.createAnteHeap(4, Constants.FOOD_VALUE/2, Color.CYAN, new Vector3f(-300, 320, 0));
-        this.createAnteHeap(5, Constants.FOOD_VALUE/2, Color.YELLOW, new Vector3f(300, 300, 0));
+        //this.createAnteHeap(4, Constants.FOOD_VALUE/2, Color.CYAN, new Vector3f(-300, 320, 0));
+        //this.createAnteHeap(5, Constants.FOOD_VALUE/2, Color.YELLOW, new Vector3f(300, 300, 0));
+        //this.createAnteHeap(6, Constants.FOOD_VALUE/2, Color.WHITE, new Vector3f(0, 0, 0));
 
         this.scene.addMouseButtonPressedListener(this::onCanvasPressed);
+        this.scene.addKeyPressedListener(glKeyEvent -> {
+            if(glKeyEvent.getKey() == GLKeyEvent.H)
+                this.homeTrack.setVisible(!this.homeTrack.isVisible());
+            else if(glKeyEvent.getKey() == GLKeyEvent.F)
+                this.foodTrack.setVisible(!this.foodTrack.isVisible());
+        });
         this.scene.addCloseListener(this::close);
         this.loadMap();
+
+        this.homeTrack = new ShapeObject("HomeTrack", Constants.HOME_TRACK_ID);
+        this.foodTrack = new ShapeObject("FoodTrack", Constants.FOOD_TRACK_ID);
+
+        this.homeTrack.setSpriteSize(new Vector2(1,1));
+        this.foodTrack.setSpriteSize(new Vector2(1,1));
+
+        this.homeTrack.setVisible(false);
+        this.foodTrack.setVisible(false);
+
+        this.scene.add(this.homeTrack);
+        this.scene.add(this.foodTrack);
 
         this.scene.start();
 
@@ -70,10 +90,9 @@ public class Roy {
                 break;
             }
         }
-
-        Camera camera = new PerspectiveCamera();
+        //Camera camera = new PerspectiveCamera();
         //camera.setTargetObject(this.newBugs.get(0));
-        this.scene.setCamera(camera);
+        //this.scene.setCamera(camera);
 
         timer.start();
     }
@@ -94,8 +113,6 @@ public class Roy {
     private void createAnteHeap(int id, int foodValue, Color color, Vector3f position){
         AntHeap antHeap = new AntHeap(id, foodValue, position, color, this::createBug, this::markAction, this::smellAction, this::moveAction, this::removeFromScene);
 
-        //this.buildings.add(antHeap);
-
         this.scene.add(antHeap);
 
         while (antHeap.getBugCount() < Constants.BUG_COUNT) {
@@ -107,116 +124,169 @@ public class Roy {
         System.exit(0);
     }
 
-   /* private void addBuilding(Building building){
-        var sceneCoord = new Vector3f(building.getPosition());
-        sceneCoord = Scene.toGLDimension(sceneCoord);
-        sceneCoord = Scene.toScreenDimension(sceneCoord);
-        int size = building.getFoodCount()/Constants.FOOD_VALUE/4;//TODO
-        for(int x = (int)sceneCoord.getX()-size; x <= (int)sceneCoord.getX()+size; x++){
-            for(int y = (int)sceneCoord.getY()-size; y <= (int)sceneCoord.getY()+size; y++){
-                if(x < 0 || x > Scene.WIDTH || y < 0 || y > Scene.HEIGHT)
-                    continue;
-                var buffer = this.buildingFields.get(building.id);
-                if(buffer != null){
-                    buffer[x][y] = building;
-                }else {
-                    this.buildingFields.put(building.id, new Building[Scene.WIDTH+1][Scene.HEIGHT+1]);
-                    buffer = this.buildingFields.get(building.id);
-                    for (var i : buffer) {
-                        Arrays.fill(i, null); //TODO
-                    }
-                    buffer[x][y] = building;
-                }
-            }
-        }
-    }*/
-
     public void createBug(Bug bug){
         this.scene.add(bug);
         this.newBugs.add(bug);
     }
 
-    /*private void addTrack(Track track){
-        var sceneCoord = new Vector3f(track.getPosition());
-        if(this.scene.isOutSceneBorder(sceneCoord))
-            return;
-        sceneCoord = Scene.toGLDimension(sceneCoord);
-        sceneCoord = Scene.toScreenDimension(sceneCoord);
-        var buffer = this.trackFields.get(track.id);
-        if (buffer != null) {
-            buffer[(int) sceneCoord.getX()][(int) sceneCoord.getY()] = track;
-        } else {
-            this.trackFields.put(track.id, new Track[Scene.WIDTH + 1][Scene.HEIGHT + 1]);
-            buffer = this.trackFields.get(track.id);
-            for (var i : buffer) {
-                Arrays.fill(i, null); //TODO
-            }
-            buffer[(int) sceneCoord.getX()][(int) sceneCoord.getY()] = track;
-        }
-    }*/
-
     public void markAction(Track track){
-        //this.tracks.add(track);//TODO simple dot shape in Engine
-       // this.scene.addObjectInBuffer(track);
-        this.scene.add(track);
+        if(track instanceof HomeTrack)
+            this.homeTrack.add(track);
+        if(track instanceof FoodTrack)
+            this.foodTrack.add(track);
+        //this.scene.add(track);
     }
 
     public void removeFromScene(ShapeObject object){
-        /*if(object instanceof Building)
-            this.buildings.remove(object);*/
         this.scene.remove(object);
     }
 
     public Integer moveAction(Bug bug){
-        if(this.scene.isOutSceneBorder(bug.getPosition())){
-            return Constants.BORDER;
+        var borderType = this.scene.isOutSceneBorder(bug.getPosition());
+        if(borderType != BorderType.NO_BORDER){
+            return this.getBorderDir(borderType);
         }else {
-            ShapeObject object = this.scene.getObject(bug.getTarget(), bug.getPosition());
-            if(object instanceof Building) {
-                if(object instanceof AntHeap) {
-                    if(bug.getBugHome() != (AntHeap) object){
-                        bug.setMemory(object);
+            var border = this.scene.getObject(Constants.BORDER_STONE_ID, bug.getPosition());
+            if(border != null)
+                return this.getBorderDir(bug, border);
+            else {
+                var foundedObjects = this.findInSmellRadius(bug, (pos) -> {
+                    GameObject object = this.scene.getObject(bug.getTarget(), pos);
+                    if(object != null) {
+                        var build = object.getParent();
+                        if (build instanceof Building) {
+                            return (Building) build;
+                        }
+                    }
+                    return null;
+                });
+
+                if(foundedObjects == null)
+                    return Constants.FREEWAY;
+                Building shortestObject = null;
+                for(var object: foundedObjects){
+                    if (shortestObject == null)
+                        shortestObject = object;
+                    else if (this.range(shortestObject.getPosition(), bug.getPosition()) > this.range(object.getPosition(), bug.getPosition()))
+                        shortestObject = object;
+                }
+                if (shortestObject instanceof AntHeap) {
+                    if (bug.getBugHome() != (AntHeap) shortestObject) {
+                        bug.setMemory(shortestObject);
                         return Constants.ALIEN_HOME;
-                    }else {
+                    } else {
                         return Constants.ANT_HEAP_ID;
                     }
-                }
-                else if(object instanceof Food) {
-                    if(!((Food)object).isAlive())
-                        this.removeFromScene(object);
+                } else if (shortestObject instanceof Food) {
+                    if (!((Food) shortestObject).isAlive())
+                        this.removeFromScene(shortestObject);
                     else {
-                        bug.setMemory(object);
+                        bug.setMemory(shortestObject);
                         return Constants.FOOD_ID;
                     }
                 }
-            }else if(this.scene.getObject(Constants.BORDER_STONE_ID, bug.getPosition()) != null){
-                return Constants.BORDER;
+                return Constants.FREEWAY;
             }
-            return Constants.FREEWAY;
         }
     }
 
+    private Integer getBorderDir(Bug bug, GameObject border) {
+        var borderPos = border.getPosition();
+        var bugPosition = bug.getPosition();
+        if(bugPosition.getX() == borderPos.getX()) {
+            if(bugPosition.getY() < borderPos.getY())
+                return Constants.BORDER_UP;
+            else
+                return Constants.BORDER_DOWN;
+        }else if(bugPosition.getX() < borderPos.getX()){
+            if(bugPosition.getY() == borderPos.getY())
+                return Constants.BORDER_RIGHT;
+            else if(bugPosition.getY() < borderPos.getY()) {
+                if (borderPos.getY() - bugPosition.getY() > border.getParent().getSpriteSize().y)
+                    return Constants.BORDER_RIGHT;
+                else
+                    return Constants.BORDER_UP;
+            }else {
+                if (bugPosition.getY() - borderPos.getY() > border.getParent().getSpriteSize().y)
+                    return Constants.BORDER_RIGHT;
+                else
+                    return Constants.BORDER_DOWN;
+            }
+        }else /*if(bugPosition.getX() > borderPos.getX())*/{
+            if(bugPosition.getY() == borderPos.getY())
+                return Constants.BORDER_LEFT;
+            else if(bugPosition.getY() < borderPos.getY()) {
+                if (borderPos.getY() - bugPosition.getY() > border.getParent().getSpriteSize().y)
+                    return Constants.BORDER_LEFT;
+                else
+                    return Constants.BORDER_UP;
+            }else {
+                if (bugPosition.getY() - borderPos.getY() > border.getParent().getSpriteSize().y)
+                    return Constants.BORDER_RIGHT;
+                else
+                    return Constants.BORDER_DOWN;
+            }
+        }
+    }
+
+    private Integer getBorderDir(BorderType borderType) {
+        switch (borderType){
+            case BORDER_RIGHT -> {
+                return Constants.BORDER_RIGHT;
+            }
+            case BORDER_LEFT -> {
+                return Constants.BORDER_LEFT;
+            }
+            case BORDER_DOWN -> {
+                return Constants.BORDER_DOWN;
+            }
+            case BORDER_UP -> {
+                return Constants.BORDER_UP;
+            }
+            default -> {
+                return 0;//TODO
+            }
+        }
+    }
+
+    public double range(Vector3f pos1, Vector3f pos2){
+        var a = Math.abs(pos1.getX() - pos2.getX());
+        var b = Math.abs(pos1.getY() - pos2.getY());
+        return Math.sqrt(a*a + b*b);
+    }
+
     public ArrayList<Track> smellAction(Bug bug){
-        if(this.scene.isOutSceneBorder(bug.getPosition())){
+        if(this.scene.isOutSceneBorder(bug.getPosition()) != BorderType.NO_BORDER){
             return null;
         }else {
-            ArrayList<Track> foundedTracks = new ArrayList<>();
-            Vector3f scenePos = new Vector3f(bug.getPosition());
-            scenePos = Scene.toGLDimension(scenePos);
-            for(float i = scenePos.getX()-bug.getSmellRadius(); i < scenePos.getX()+bug.getSmellRadius(); i++)
-                for(float j = scenePos.getY()-bug.getSmellRadius(); j < scenePos.getY()+bug.getSmellRadius(); j++){
-                    Vector3f tmp = new Vector3f(i, j, 0f);
-                    if(!this.scene.isOutSceneBorder(new Vector3f(tmp.getX()/Scene.WIDTH, tmp.getY()/Scene.HEIGHT, tmp.getZ()/Scene.WIDTH))) {
-                        ShapeObject object = this.scene.getObject(this.getBugTargetId(bug), new Vector3f(tmp.getX()/Scene.WIDTH, tmp.getY()/Scene.HEIGHT, tmp.getZ()/Scene.WIDTH));
-                        if(object instanceof Track)
-                            foundedTracks.add((Track) object);
-
-                    }
-                }
+            var foundedTracks = this.findInSmellRadius(bug, (pos) -> {
+                GameObject object = this.scene.getObject(this.getBugTargetId(bug), pos);
+                if (object instanceof Track)
+                    if (((Track) object).isActive())
+                        return (Track) object;
+                return null;
+            });
             if(!foundedTracks.isEmpty())
                 return foundedTracks;
             return null;
         }
+    }
+
+    public <T> ArrayList<T> findInSmellRadius(Bug bug, Function<Vector3f, T> function){
+        ArrayList<T> foundedObjects = new ArrayList<>();
+        Vector3f scenePos = new Vector3f(bug.getPosition());
+        scenePos = Scene.toGLDimension(scenePos);
+        for(float i = scenePos.getX() - bug.getSmellRadius(); i <= scenePos.getX() + bug.getSmellRadius(); i++) {
+            for (float j = scenePos.getY() - bug.getSmellRadius(); j <= scenePos.getY() + bug.getSmellRadius(); j++) {
+                Vector3f tmp = new Vector3f(i / Scene.WIDTH, j / Scene.HEIGHT, 0f);
+                if (this.scene.isOutSceneBorder(tmp) == BorderType.NO_BORDER) {
+                    var foundedObject = function.apply(tmp);
+                    if(foundedObject != null)
+                        foundedObjects.add(foundedObject);
+                }
+            }
+        }
+        return foundedObjects;
     }
 
     public int getBugTargetId(Bug bug){
@@ -227,45 +297,6 @@ public class Roy {
             id = Constants.HOME_TRACK_ID;
         return id;
     }
-
-    /*public Building getBuilding(int id, Vector3f pos){
-        var buffer = this.buildingFields.get(id);
-        if(buffer != null){
-            Vector3f scenePos = new Vector3f(pos);
-            scenePos = Scene.toGLDimension(scenePos);
-            scenePos = Scene.toScreenDimension(scenePos);
-            if(buffer[(int)scenePos.getX()][(int)scenePos.getY()] != null)
-                return buffer[(int)scenePos.getX()][(int)scenePos.getY()];
-            return null;
-        }else
-            return null;
-    }*/
-
-    /*public Track getTrack(int id, Vector3f pos){
-        var buffer = this.trackFields.get(id);
-        if(buffer != null){
-            Vector3f scenePos = new Vector3f(pos);
-            scenePos = Scene.toScreenDimension(scenePos);
-            if(buffer[(int)scenePos.getX()][(int)scenePos.getY()] != null)
-                if(this.isTrackAlive(buffer[(int)scenePos.getX()][(int)scenePos.getY()]))
-                    return buffer[(int)scenePos.getX()][(int)scenePos.getY()];
-                else
-                    return null;
-            return null;
-        }else
-            return null;
-    }*/
-
-   /* public boolean isTrackAlive(Track track){//TODO
-        if(!track.isActive()) {
-            this.scene.remove(track);
-            return false;
-        }
-        else {
-            track.decreaseTimeLine();
-            return true;
-        }
-    }*/
 
     private void game(ActionEvent event){
         this.bugs.addAll(this.newBugs);
@@ -281,8 +312,6 @@ public class Roy {
         this.bugs.removeAll(oldBugs);
 
         this.scene.updateObjectBuffer(Constants.FOOD_ID, Constants.ANT_HEAP_ID);
-        //this.buildingFields.clear();
-        //Arrays.stream(this.buildings.toArray(new Building[0])).toList().forEach(this::addBuilding);
     }
 
     public void onCanvasPressed(GLMouseEvent event) {
@@ -293,7 +322,6 @@ public class Roy {
 
             System.out.println(screenPos);
             Food food = new Food(Constants.FOOD_VALUE / 4, screenPos, Color.GREEN);
-            //this.buildings.add(food);
             this.scene.add(food);
         }
     }

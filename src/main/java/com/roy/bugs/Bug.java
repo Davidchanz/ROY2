@@ -72,23 +72,36 @@ public abstract class Bug extends ShapeObject implements NPC{
         super.move(new Vector3f(dir.x, dir.y, 0));
         this.rotate();
         this.steps++;
-        switch (this.bugHome.getMoveAction().apply(this)){
+        var whereI = this.bugHome.getMoveAction().apply(this);
+        switch (whereI){
             case Constants.ANT_HEAP_ID ->{//found own home
                 this.friendHome();
+                if (this.steps % Constants.BUG_MARK_FREQUENCY == 0) {
+                    this.mark();
+                }
             }
             case Constants.FOOD_ID ->{//found food
                 this.food();
+                if (this.steps % Constants.BUG_MARK_FREQUENCY == 0) {
+                    this.mark();
+                }
             }
-            case Constants.BORDER ->{//found border
-                this.border();
+            case Constants.BORDER_RIGHT, Constants.BORDER_UP, Constants.BORDER_LEFT, Constants.BORDER_DOWN ->{//found border
+                this.border(whereI);
             }
 
             case Constants.FREEWAY -> {//simple go
                 this.freeWay();
+                if (this.steps % Constants.BUG_MARK_FREQUENCY == 0) {
+                    this.mark();
+                }
             }
 
             case Constants.ALIEN_HOME ->{//found alien home
                 this.alienHome();
+                if (this.steps % Constants.BUG_MARK_FREQUENCY == 0) {
+                    this.mark();
+                }
             }
         }
         this.postMove();
@@ -103,7 +116,7 @@ public abstract class Bug extends ShapeObject implements NPC{
         for(var track: tracks){
             if (minTrack == null)
                 minTrack = track;
-            else if (minTrack.getRange() > track.getRange())
+            else if (minTrack.getRange() >= track.getRange())
                 minTrack = track;
         }
         return minTrack;
@@ -125,7 +138,7 @@ public abstract class Bug extends ShapeObject implements NPC{
 
     @Override
     public void postMove() {
-        if(this.lost && this.freeWayCount == Constants.BUG_LOST_STEPS*100){
+        if(this.lost && this.freeWayCount == Constants.BUG_LOST_STEPS*50){
             this.death();
         }
     }
@@ -133,20 +146,69 @@ public abstract class Bug extends ShapeObject implements NPC{
     @Override
     public void preMove() {
         this.smell();
-        if (this.steps % Constants.BUG_MARK_FREQUENCY == 0) {
-            this.mark();
-        }
     }
 
     @Override
-    public void border() {
+    public void border(int whereBorder) {
         if(this.lost) {
+            this.move(new Vector3f(this.dir.x, this.dir.y, 0).neg());
+            this.move(new Vector3f(this.dir.x, this.dir.y, 0).neg());
+            this.move(new Vector3f(this.dir.x, this.dir.y, 0).neg());
+            //this.turnFromBorder(whereBorder);
             this.turnAround();
+            //this.findNewDir();
         }else {
-            this.turnAround();
-            this.move();
-            this.turnAround();
+            System.out.println("FUCK");
+            //this.turnAround();
+            this.move(new Vector3f(this.dir.x, this.dir.y, 0).neg());//TODO
+            this.move(new Vector3f(this.dir.x, this.dir.y, 0).neg());
+            this.move(new Vector3f(this.dir.x, this.dir.y, 0).neg());
+            //this.turnFromBorder(whereBorder);
         }
+        //this.mark();
+    }
+
+    private void turnFromBorder(int whereBorder) {
+        var angle = this.dir.angleDeg();
+        switch (whereBorder){
+            case Constants.BORDER_RIGHT -> {
+                this.move(new Vector3f(-1, 0, 0));
+                if(angle == 0 || angle == 90)
+                    this.turnAround();
+                else if(angle < 90)
+                    this.dir.rotateDeg(180 - angle);
+                else
+                    this.dir.rotateDeg(180 - angle + 360);
+            }
+            case Constants.BORDER_UP -> {
+                this.move(new Vector3f(0, -1, 0));
+                if(angle == 90  || angle == 180)
+                    this.turnAround();
+                else if(angle < 90)
+                    this.dir.rotateDeg(180 + angle + angle);
+                else
+                    this.dir.rotateDeg(180 - angle + 180);
+            }
+            case Constants.BORDER_LEFT -> {
+                this.move(new Vector3f(1, 0, 0));
+                if(angle == 180  || angle == 270)
+                    this.turnAround();
+                else if(angle < 180)
+                    this.dir.rotateDeg(-(angle - 180));
+                else
+                    this.dir.rotateDeg(180 - angle + 360);
+            }
+            case Constants.BORDER_DOWN -> {
+                this.move(new Vector3f(0, 1, 0));
+                if(angle == 270 || angle == 0)
+                    this.turnAround();
+                else if(angle < 270)
+                    this.dir.rotateDeg(360 - angle + 180);
+                else
+                    this.dir.rotateDeg(360 - angle);
+            }
+        }
+        this.rotate();
     }
 
     public int getSmellRadius() {
