@@ -55,11 +55,11 @@ public class Roy {
 
         this.bugs = new ArrayList<>();
 
-        this.createAnteHeap(2, Constants.FOOD_VALUE/4, Color.RED, new Vector3f(-300, -300, 0));
+        //this.createAnteHeap(2, Constants.FOOD_VALUE/4, Color.RED, new Vector3f(-300, -300, 0));
         //this.createAnteHeap(3, Constants.FOOD_VALUE/2, Color.GREEN, new Vector3f(300, -300, 0));
         //this.createAnteHeap(4, Constants.FOOD_VALUE/2, Color.CYAN, new Vector3f(-300, 320, 0));
         //this.createAnteHeap(5, Constants.FOOD_VALUE/2, Color.YELLOW, new Vector3f(300, 300, 0));
-        //this.createAnteHeap(6, Constants.FOOD_VALUE/2, Color.WHITE, new Vector3f(0, 0, 0));
+        this.createAnteHeap(6, Constants.FOOD_VALUE/4, Color.WHITE, new Vector3f(0, 0, 0));
 
         this.scene.addMouseButtonPressedListener(this::onCanvasPressed);
         this.scene.addKeyPressedListener(glKeyEvent -> {
@@ -190,43 +190,106 @@ public class Roy {
         }
     }
 
-    private Integer getBorderDir(Bug bug, GameObject border) {
+    public static Integer getBorderDir(Bug bug, GameObject border) {
         var borderPos = border.getPosition();
         var bugPosition = bug.getPosition();
-        if(bugPosition.getX() == borderPos.getX()) {
-            if(bugPosition.getY() < borderPos.getY())
-                return Constants.BORDER_UP;
-            else
-                return Constants.BORDER_DOWN;
-        }else if(bugPosition.getX() < borderPos.getX()){
-            if(bugPosition.getY() == borderPos.getY())
-                return Constants.BORDER_RIGHT;
-            else if(bugPosition.getY() < borderPos.getY()) {
-                if (borderPos.getY() - bugPosition.getY() > border.getParent().getSpriteSize().y)
-                    return Constants.BORDER_RIGHT;
-                else
+        borderPos = Scene.toGLDimension(borderPos);
+        bugPosition = Scene.toGLDimension(bugPosition);
+
+        if((int)bugPosition.getX() - (int)borderPos.getX() >= border.getParent().getSpriteSize().x &&
+            Math.abs((int)bugPosition.getY() - (int)borderPos.getY()) <= border.getParent().getSpriteSize().y)
+            return Constants.BORDER_LEFT;
+        else if((int)borderPos.getX() - (int)bugPosition.getX() >= border.getParent().getSpriteSize().x &&
+                Math.abs((int)bugPosition.getY() - (int)borderPos.getY()) <= border.getParent().getSpriteSize().y)
+            return Constants.BORDER_RIGHT;
+        else if((int)bugPosition.getY() - (int)borderPos.getY() >= border.getParent().getSpriteSize().y &&
+                Math.abs((int)bugPosition.getX() - (int)borderPos.getX()) <= border.getParent().getSpriteSize().x)
+            return Constants.BORDER_DOWN;
+        else if((int)borderPos.getY() - (int)bugPosition.getY() >= border.getParent().getSpriteSize().y &&
+                Math.abs((int)bugPosition.getX() - (int)borderPos.getX()) <= border.getParent().getSpriteSize().x)
+            return Constants.BORDER_UP;
+        else {
+            Vector2 bugV = new Vector2(bugPosition.getX(), bugPosition.getY());
+            Vector2 borV = new Vector2(borderPos.getX(), borderPos.getY());
+            //System.out.println(borV.sub(bugV).nor());
+            bug.setMemory(borV.sub(bugV).nor());
+            return Constants.BORDER_CORNER;
+        }
+
+
+        /*if(Math.abs(bugPosition.getX() - borderPos.getX()) >= border.getParent().getSpriteSize().x
+                && Math.abs(bugPosition.getY() - borderPos.getY()) <= border.getParent().getSpriteSize().y) {
+            if (bugPosition.getX() == borderPos.getX()) {//TODO compare Y
+                if (bugPosition.getY() < borderPos.getY())
                     return Constants.BORDER_UP;
-            }else {
-                if (bugPosition.getY() - borderPos.getY() > border.getParent().getSpriteSize().y)
-                    return Constants.BORDER_RIGHT;
                 else
                     return Constants.BORDER_DOWN;
-            }
-        }else /*if(bugPosition.getX() > borderPos.getX())*/{
-            if(bugPosition.getY() == borderPos.getY())
-                return Constants.BORDER_LEFT;
-            else if(bugPosition.getY() < borderPos.getY()) {
-                if (borderPos.getY() - bugPosition.getY() > border.getParent().getSpriteSize().y)
+            } else if (bugPosition.getX() < borderPos.getX()) {
+                if (bugPosition.getY() == borderPos.getY())
+                    return Constants.BORDER_RIGHT;
+                else if (bugPosition.getY() < borderPos.getY()) {
+                    if (Math.abs(borderPos.getY() - bugPosition.getY()) <= border.getParent().getSpriteSize().y)
+                        return Constants.BORDER_RIGHT;
+                    else
+                        return Constants.BORDER_UP;
+                } else {
+                    if (Math.abs(bugPosition.getY() - borderPos.getY()) <= border.getParent().getSpriteSize().y)
+                        return Constants.BORDER_RIGHT;
+                    else
+                        return Constants.BORDER_DOWN;
+                }
+            } else *//*if(bugPosition.getX() > borderPos.getX())*//* {
+                if (bugPosition.getY() == borderPos.getY())
                     return Constants.BORDER_LEFT;
-                else
-                    return Constants.BORDER_UP;
-            }else {
-                if (bugPosition.getY() - borderPos.getY() > border.getParent().getSpriteSize().y)
-                    return Constants.BORDER_RIGHT;
-                else
-                    return Constants.BORDER_DOWN;
+                else if (bugPosition.getY() < borderPos.getY()) {
+                    if (Math.abs(borderPos.getY() - bugPosition.getY()) <= border.getParent().getSpriteSize().y)
+                        return Constants.BORDER_LEFT;
+                    else
+                        return Constants.BORDER_UP;
+                } else {
+                    if (Math.abs(bugPosition.getY() - borderPos.getY()) <= border.getParent().getSpriteSize().y)
+                        return Constants.BORDER_LEFT;
+                    else
+                        return Constants.BORDER_DOWN;
+                }
             }
         }
+        else{
+            if (bugPosition.getX() == borderPos.getX()) {
+                if (bugPosition.getY() < borderPos.getY())
+                    return Constants.BORDER_UP;
+                else
+                    return Constants.BORDER_DOWN;
+            } else if (bugPosition.getX() < borderPos.getX()) {
+                if (bugPosition.getY() == borderPos.getY())
+                    return Constants.BORDER_RIGHT;
+                else if (bugPosition.getY() < borderPos.getY()) {
+                    if (Math.abs(borderPos.getX() - bugPosition.getX()) >= border.getParent().getSpriteSize().x)
+                        return Constants.BORDER_RIGHT;
+                    else
+                        return Constants.BORDER_UP;
+                } else {
+                    if (Math.abs(bugPosition.getX() - borderPos.getX()) >= border.getParent().getSpriteSize().x)
+                        return Constants.BORDER_RIGHT;
+                    else
+                        return Constants.BORDER_DOWN;
+                }
+            } else *//*if(bugPosition.getX() > borderPos.getX())*//* {
+                if (bugPosition.getY() == borderPos.getY())
+                    return Constants.BORDER_LEFT;
+                else if (bugPosition.getY() < borderPos.getY()) {
+                    if (Math.abs(borderPos.getX() - bugPosition.getX()) >= border.getParent().getSpriteSize().x)
+                        return Constants.BORDER_LEFT;
+                    else
+                        return Constants.BORDER_UP;
+                } else {
+                    if (Math.abs(bugPosition.getX() - borderPos.getX()) >= border.getParent().getSpriteSize().x)
+                        return Constants.BORDER_LEFT;
+                    else
+                        return Constants.BORDER_DOWN;
+                }
+            }
+        }*/
     }
 
     private Integer getBorderDir(BorderType borderType) {
@@ -320,7 +383,7 @@ public class Roy {
             float mouseY = (float) event.getY();
             var screenPos = new Vector3f(mouseX, mouseY, 0);
 
-            System.out.println(screenPos);
+            //System.out.println(screenPos);
             Food food = new Food(Constants.FOOD_VALUE / 4, screenPos, Color.GREEN);
             this.scene.add(food);
         }

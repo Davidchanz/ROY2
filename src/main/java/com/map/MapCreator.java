@@ -25,11 +25,15 @@ public class MapCreator {
     private Scene scene;
     private ArrayList<ShapeObject> objects;
     double lastX, lastY;
+    int map[][];
 
     public MapCreator(){
         this.objects = new ArrayList<>();
 
         this.scene = new Scene(800, 800, 800, 800, Color.CRIMSON);
+        this.map = new int[800][800];
+        for(var i: this.map)
+            Arrays.fill(i, 0);
         //Camera camera = new PerspectiveCamera();
         //this.scene.setCamera(camera);
         //this.scene.addMouseButtonPressedListener(this::onCanvasPressed);
@@ -57,16 +61,19 @@ public class MapCreator {
             float mouseX = (float) glMouseEvent.getX();
             float mouseY = (float) glMouseEvent.getY();
             var screenPos = new Vector3f(mouseX, mouseY, 0);
-            //System.out.println(screenPos);
-            //var m = this.scene.transform(screenPos);
-            //System.out.println("x: "+m.get(0,0)+"\ny: "+m.get(1,0)+"\nz: "+m.get(2,0));
-            //System.out.println(m);
+            var mapPos = Scene.toScreenDimension(screenPos);
 
-            System.out.println(screenPos);
-            Stone stone = new Stone(screenPos);
-            //System.out.println(stone.getPosition());
-            this.objects.add(stone);
-            this.scene.add(stone);
+            int i = (int)mapPos.getX() / Constants.STONE_SIZE;
+            int j = (int)mapPos.getY() / Constants.STONE_SIZE;
+            System.out.println(this.map[i][j]);
+            if(this.map[i][j] == 0){
+                this.map[i][j] = Constants.BORDER_STONE_ID;
+                Vector3f scenePos = new Vector3f(i*Constants.STONE_SIZE, j*Constants.STONE_SIZE, 0);
+                scenePos = Scene.toSceneDimension(scenePos);
+                Stone stone = new Stone(scenePos);
+                this.objects.add(stone);
+                this.scene.add(stone);
+            }
             lastX = mouseX;
             lastY = mouseY;
         }

@@ -8,6 +8,7 @@ import com.roy.tracks.Track;
 import com.roy.utils.Constants;
 import org.UnityMath.Vector2;
 import org.engine.Scene;
+import org.engine.maths.Vector3f;
 
 public class AntWorker extends Bug {
     private int rangeToFood;
@@ -101,11 +102,11 @@ public class AntWorker extends Bug {
         Track track = null;
         switch (this.target){
             case Constants.FOOD_ID ->{//looking for food
-                track = new HomeTrack(this.antHeap.getIdentity(), this.rangeToHome, Scene.toGLDimension(this.getPosition()));
+                track = new HomeTrack(this.antHeap.getIdentity(), this.rangeToHome, Scene.toGLDimension(Vector3f.add(this.getPosition(),this.getCenter())));
                 this.rangeToHome++;
             }
             case Constants.ANT_HEAP_ID ->{//looking for home
-                track = new FoodTrack(this.antHeap.getIdentity(), this.rangeToFood, Scene.toGLDimension(this.getPosition()));
+                track = new FoodTrack(this.antHeap.getIdentity(), this.rangeToFood, Scene.toGLDimension(Vector3f.add(this.getPosition(),this.getCenter())));
                 this.rangeToFood++;
             }
         }

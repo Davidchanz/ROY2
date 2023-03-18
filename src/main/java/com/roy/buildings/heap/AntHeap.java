@@ -9,6 +9,7 @@ import org.UnityMath.Vector2;
 import org.engine.maths.Vector3f;
 import org.engine.objects.GameObject;
 import org.engine.objects.ShapeObject;
+import org.engine.shapes.Circle;
 import org.engine.shapes.Rectangle;
 import org.engine.utils.Color;
 
@@ -29,10 +30,6 @@ public class AntHeap extends Building implements BugHome{
     //private ArrayList<Bug> bugs;
     private Color color;
 
-    public AntHeap(Vector3f position){
-        super("AntHeap", Constants.ANT_HEAP_ID);
-    }
-
     public AntHeap(int id, int foodCount, Vector3f pos, Color color, Consumer<Bug> createBug, Consumer<Track> markAction, Function<Bug, ArrayList<Track>> smellAction, Function<Bug, Integer> moveAction, Consumer<ShapeObject> death) {
         super("AntHeap", Constants.ANT_HEAP_ID);
         this.identity = id;
@@ -41,7 +38,8 @@ public class AntHeap extends Building implements BugHome{
         this.smellAction = smellAction;
         this.moveAction = moveAction;
         this.deathAction = death;
-        this.shape = new Rectangle(foodCount, new Vector3f(pos), color);
+        this.shape = new Circle(foodCount, new Vector3f(pos), color, "src/main/resources/com/roy/ant_heap.png");
+        this.shape.setScale(new Vector3f(3f, 4f,4f));
         this.foodCount = foodCount * Constants.FOOD_VALUE;
         this.add(this.shape);
         this.bugCount = 0;
@@ -87,7 +85,6 @@ public class AntHeap extends Building implements BugHome{
         if(this.foodCount % Constants.FOOD_VALUE == 0) {
             //this.resize();
             this.addWorker();
-            System.out.println("New Bug!");
         }
     }
 

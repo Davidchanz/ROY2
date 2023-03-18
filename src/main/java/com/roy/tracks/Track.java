@@ -5,6 +5,7 @@ import org.UnityMath.Vector2;
 import org.engine.maths.Vector3f;
 import org.engine.objects.GameObject;
 import org.engine.objects.ShapeObject;
+import org.engine.shapes.Dot;
 import org.engine.shapes.Rectangle;
 import org.engine.utils.Color;
 
@@ -15,7 +16,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class Track extends Rectangle {
+public abstract class Track extends Dot {
     protected int type;
     //protected GameObject shape;
     private int timeLine;
@@ -33,7 +34,7 @@ public abstract class Track extends Rectangle {
     }
 
     public Track(int id, int range, Vector3f pos, Color color){
-        super(1f, new Vector3f(pos), color);
+        super(new Vector3f(pos), color);
         //this.setId(); = id;
         //super("Track", id);
         this.range = range;

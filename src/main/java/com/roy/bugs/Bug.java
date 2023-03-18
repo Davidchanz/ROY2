@@ -86,7 +86,7 @@ public abstract class Bug extends ShapeObject implements NPC{
                     this.mark();
                 }
             }
-            case Constants.BORDER_RIGHT, Constants.BORDER_UP, Constants.BORDER_LEFT, Constants.BORDER_DOWN ->{//found border
+            case Constants.BORDER_RIGHT, Constants.BORDER_UP, Constants.BORDER_LEFT, Constants.BORDER_DOWN, Constants.BORDER_CORNER ->{//found border
                 this.border(whereI);
             }
 
@@ -138,7 +138,7 @@ public abstract class Bug extends ShapeObject implements NPC{
 
     @Override
     public void postMove() {
-        if(this.lost && this.freeWayCount == Constants.BUG_LOST_STEPS*50){
+        if(this.lost && this.freeWayCount == Constants.BUG_LOST_STEPS*5000){
             this.death();
         }
     }
@@ -150,66 +150,67 @@ public abstract class Bug extends ShapeObject implements NPC{
 
     @Override
     public void border(int whereBorder) {
-        if(this.lost) {
+        /*if(this.lost) {
             this.move(new Vector3f(this.dir.x, this.dir.y, 0).neg());
             this.move(new Vector3f(this.dir.x, this.dir.y, 0).neg());
             this.move(new Vector3f(this.dir.x, this.dir.y, 0).neg());
-            //this.turnFromBorder(whereBorder);
-            this.turnAround();
-            //this.findNewDir();
+            this.turnFromBorder(whereBorder);
+
         }else {
-            System.out.println("FUCK");
-            //this.turnAround();
-            this.move(new Vector3f(this.dir.x, this.dir.y, 0).neg());//TODO
             this.move(new Vector3f(this.dir.x, this.dir.y, 0).neg());
             this.move(new Vector3f(this.dir.x, this.dir.y, 0).neg());
-            //this.turnFromBorder(whereBorder);
-        }
-        //this.mark();
+            this.move(new Vector3f(this.dir.x, this.dir.y, 0).neg());
+            this.turnFromBorder(whereBorder);
+        }*/
+        this.move(new Vector3f(this.dir.x, this.dir.y, 0).neg());
+        this.move(new Vector3f(this.dir.x, this.dir.y, 0).neg());
+        this.move(new Vector3f(this.dir.x, this.dir.y, 0).neg());
+        this.turnFromBorder(whereBorder);
     }
 
     private void turnFromBorder(int whereBorder) {
         var angle = this.dir.angleDeg();
         switch (whereBorder){
             case Constants.BORDER_RIGHT -> {
-                this.move(new Vector3f(-1, 0, 0));
-                if(angle == 0 || angle == 90)
-                    this.turnAround();
-                else if(angle < 90)
-                    this.dir.rotateDeg(180 - angle);
+                //System.out.println("RIGHT");
+                if(angle <= 90f)
+                    this.dir.setAngleDeg(180 - angle);
                 else
-                    this.dir.rotateDeg(180 - angle + 360);
+                    this.dir.setAngleDeg(180 - angle + 360);
             }
             case Constants.BORDER_UP -> {
-                this.move(new Vector3f(0, -1, 0));
-                if(angle == 90  || angle == 180)
-                    this.turnAround();
-                else if(angle < 90)
-                    this.dir.rotateDeg(180 + angle + angle);
+                //System.out.println("UP");
+                if(angle <= 90f)
+                    this.dir.setAngleDeg(180 - angle + 180);
                 else
-                    this.dir.rotateDeg(180 - angle + 180);
+                    this.dir.setAngleDeg(180 - angle + 180);
             }
             case Constants.BORDER_LEFT -> {
-                this.move(new Vector3f(1, 0, 0));
-                if(angle == 180  || angle == 270)
-                    this.turnAround();
-                else if(angle < 180)
-                    this.dir.rotateDeg(-(angle - 180));
+                //System.out.println("LEFT");
+                //System.out.println(dir.angleDeg());
+                if(angle <= 180f)
+                    this.dir.setAngleDeg(180 - angle);
                 else
-                    this.dir.rotateDeg(180 - angle + 360);
+                    this.dir.setAngleDeg(180 - angle + 360);
+                //System.out.println(dir.angleDeg());
             }
             case Constants.BORDER_DOWN -> {
-                this.move(new Vector3f(0, 1, 0));
-                if(angle == 270 || angle == 0)
-                    this.turnAround();
-                else if(angle < 270)
-                    this.dir.rotateDeg(360 - angle + 180);
+                //System.out.println("DOWN");
+                if(angle <= 270f)
+                    this.dir.setAngleDeg(180 - angle + 180);
                 else
-                    this.dir.rotateDeg(360 - angle);
+                    this.dir.setAngleDeg(180 - angle + 180);
+            }
+            case Constants.BORDER_CORNER -> {//TODO
+                //this.turnAround();
+                Vector2 borOutDir = (Vector2) this.getMemory();
+                this.setMemory(null);
+                this.dir.sub(borOutDir).nor();
+                this.move(new Vector3f(this.dir.x, this.dir.y, 0));
             }
         }
         this.rotate();
-    }
+    }//TODO
 
     public int getSmellRadius() {
         return smellRadius;

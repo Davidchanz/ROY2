@@ -8,7 +8,7 @@ public class Constants {
     public static int FOOD_VALUE;
     public static float ANT_WORKER_SIZE = 10f;
     public static final int BUG_ID = 4;
-    public static int BUG_SMELL_RADIUS = 10;
+    public static int BUG_SMELL_RADIUS = 12;
     public static int ANT_WORKER_FOOD_CAPACITY = 1;
     public static int BUG_MARK_FREQUENCY = 10;
     public static int BUG_TURN_DEGREE = 120;
@@ -23,6 +23,7 @@ public class Constants {
     public static final int BORDER_DOWN = 6;
     public static final int BORDER_RIGHT = 7;
     public static final int BORDER_LEFT = 8;
+    public static final int BORDER_CORNER = 9;
     public static final int FREEWAY = -1;
     public static int TRACK_LIFE_CAPACITY = 1000;
     public static final String ANT_WORKER = "src/main/resources/com/roy/white_ant.png";
