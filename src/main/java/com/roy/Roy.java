@@ -59,7 +59,7 @@ public class Roy {
         //this.createAnteHeap(3, Constants.FOOD_VALUE/2, Color.GREEN, new Vector3f(300, -300, 0));
         //this.createAnteHeap(4, Constants.FOOD_VALUE/2, Color.CYAN, new Vector3f(-300, 320, 0));
         //this.createAnteHeap(5, Constants.FOOD_VALUE/2, Color.YELLOW, new Vector3f(300, 300, 0));
-        this.createAnteHeap(6, Constants.FOOD_VALUE/4, Color.WHITE, new Vector3f(0, 0, 0));
+        this.createAnteHeap(6, Constants.FOOD_VALUE/2, Color.BROWN, new Vector3f(0, 0, 0));
 
         this.scene.addMouseButtonPressedListener(this::onCanvasPressed);
         this.scene.addKeyPressedListener(glKeyEvent -> {

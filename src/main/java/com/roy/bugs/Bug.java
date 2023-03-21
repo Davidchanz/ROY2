@@ -205,8 +205,10 @@ public abstract class Bug extends ShapeObject implements NPC{
                 //this.turnAround();
                 Vector2 borOutDir = (Vector2) this.getMemory();
                 this.setMemory(null);
-                this.dir.sub(borOutDir).nor();
-                this.move(new Vector3f(this.dir.x, this.dir.y, 0));
+                this.dir.sub(borOutDir).nor();//TODO
+                //this.move(new Vector3f(this.dir.x, this.dir.y, 0));
+                //this.smell();
+                //this.mark();
             }
         }
         this.rotate();

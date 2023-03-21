@@ -38,15 +38,14 @@ public class AntHeap extends Building implements BugHome{
         this.smellAction = smellAction;
         this.moveAction = moveAction;
         this.deathAction = death;
-        this.shape = new Circle(foodCount, new Vector3f(pos), color, "src/main/resources/com/roy/ant_heap.png");
-        this.shape.setScale(new Vector3f(3f, 4f,4f));
+        this.shape = new Circle(foodCount, new Vector3f(pos), color, "src/main/resources/com/roy/ant_Heap.png");
         this.foodCount = foodCount * Constants.FOOD_VALUE;
         this.add(this.shape);
         this.bugCount = 0;
         this.isAlive = true;
         //this.bugs = new ArrayList<>();
         this.color = color;
-        this.setSpriteSize(new Vector2(this.shape.getWidth(), this.shape.getHeight()));
+        this.setSpriteSize(new Vector2(this.shape.getWidth()/5, this.shape.getHeight()/5));
     }
 
     @Override
